@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#0A0A0A" />
 <meta name="color-scheme" content="dark" />
-<meta name="game-version" content="spacexai-v3" />
+<meta name="game-version" content="spacexai-v4" />
 <title>Paradoxes Galore! — a causal puzzle game</title>
 <meta name="description" content="A playable tour of Monty Hall, collider bias, Simpson’s paradox, and Lord’s paradox. Based on Chapter 6 of The Book of Why by Judea Pearl and Dana Mackenzie." />
 <meta property="og:title" content="Paradoxes Galore!" />
@@ -661,18 +661,18 @@ body.og #og { display: block; }
 
   <section class="screen" id="r2-intro">
     <h2 class="round-title">Berkson’s paradox</h2>
-    <p class="lede">Two fair coins, flipped independently. We’ll do this 100 times — but only write down a trial if at least one coin lands heads (~75 entries; TT is thrown out).</p>
+    <p class="lede">Two fair coins, flipped independently. We’ll do this 100 times — but only write down a trial if at least one coin lands heads (~75 entries; every TT is thrown out).</p>
     <details class="why"><summary>Why?</summary><div class="why-body"><p>This is the same structure as a hospital study that only includes people who got admitted for one disease or another.</p></div></details>
     <div class="spacer"></div>
     <button class="btn btn-primary" data-go="r2-guess">Make my guess</button>
   </section>
 
   <section class="screen" id="r2-guess">
-    <h2 class="round-title">In the recorded list, are the coins still independent?</h2>
-    <p class="note">Each coin is fair. The flips don’t influence each other. We just ignore tails-tails.</p>
+    <h2 class="round-title">In the list we kept, do Coin 1 and Coin 2 look independent?</h2>
+    <p class="note">The coins never influence each other when flipped. We’re asking only about the <em>recorded</em> outcomes — after every TT trial is deleted.</p>
     <div class="choices">
-      <button class="choice" data-q="coins" data-a="indep">Independent<small>Knowing Coin 1 tells you nothing about Coin 2, even in the list.</small></button>
-      <button class="choice" data-q="coins" data-a="corr">Correlated<small>The recorded results will make the coins look dependent.</small></button>
+      <button class="choice" data-q="coins" data-a="indep">Yes — still independent<small>Deleting TT doesn’t create a link between Coin 1 and Coin 2 in the list.</small></button>
+      <button class="choice" data-q="coins" data-a="corr">No — they look dependent<small>In the recorded list, Coin 1’s outcome predicts Coin 2’s.</small></button>
     </div>
     <div id="r2-guess-result"></div>
     <button class="btn btn-primary" id="r2-to-play" hidden data-go="r2-play">Flip 100 times</button>
@@ -709,31 +709,8 @@ body.og #og { display: block; }
 
   <section class="screen" id="r3-intro">
     <h2 class="round-title">Simpson’s paradox</h2>
-    <p class="lede">A fictional trial of Drug D (Table 6.4). Combined numbers only:</p>
-    <div class="glass">
-      <div class="rates">
-        <div class="rate-row">
-          <div class="rate-meta"><span>No drug</span><b>13/60 · 22%</b></div>
-          <div class="bar"><i style="--w:22%"></i></div>
-        </div>
-        <div class="rate-row">
-          <div class="rate-meta"><span>Drug D</span><b>11/60 · 18%</b></div>
-          <div class="bar better"><i style="--w:18%"></i></div>
-        </div>
-      </div>
-    </div>
-    <h3 style="font-size:18px;font-weight:800;letter-spacing:-.02em">Is Drug D a good or bad drug?</h3>
-    <p class="note">Guess from the totals. You’ll see the breakdown next.</p>
-    <div class="row">
-      <button class="btn btn-good" data-q="drugD" data-a="good">Good</button>
-      <button class="btn btn-bad" data-q="drugD" data-a="bad">Bad</button>
-    </div>
-    <div id="r3-guess-result"></div>
-    <button class="btn btn-primary" id="r3-to-split" hidden data-go="r3-split">Show the data by sex</button>
-  </section>
-
-  <section class="screen" id="r3-split">
-    <h2 class="round-title">Worse for women, worse for men</h2>
+    <p class="lede">A fictional trial of Drug D (Table 6.4). Heart-attack rates by sex and overall:</p>
+    <p class="note">This one trips people up — the totals and the subgroups tell opposite stories.</p>
     <div class="glass">
       <div class="rates">
         <div class="rate-block">
@@ -771,16 +748,28 @@ body.og #og { display: block; }
         </div>
       </div>
     </div>
-    <p class="lede">Women 5% → 7.5%. Men 30% → 40%. Totals 22% → 18%.</p>
+    <p class="lede">Sex is decided before treatment: it affects both who tends to take the drug and who gets heart attacks. That makes sex a <em>confounder</em>.</p>
+    <h3 style="font-size:18px;font-weight:800;letter-spacing:-.02em">Is Drug D a good or bad drug for heart attacks?</h3>
+    <div class="choices">
+      <button class="choice" data-q="drugD" data-a="good">Good — trust the totals (18% vs 22%)<small>Fewer heart attacks overall with Drug D, so the drug helps.</small></button>
+      <button class="choice" data-q="drugD" data-a="bad">Bad — sex is a confounder, so use the sex-specific rates<small>Worse for women (5%→7.5%) and for men (30%→40%).</small></button>
+    </div>
+    <div id="r3-guess-result"></div>
+    <button class="btn btn-primary" id="r3-to-split" hidden data-go="r3-split">See why</button>
+  </section>
+
+  <section class="screen" id="r3-split">
+    <h2 class="round-title">Bad for women, bad for men, bad for people</h2>
+    <p class="lede">Women 5% → 7.5%. Men 30% → 40%. The totals (22% → 18%) look better only because more women took the drug, and women had fewer heart attacks either way.</p>
     <div class="glass"><div id="diag-confounder"></div></div>
-    <details class="why"><summary>Why? The adjusted rates</summary><div class="why-body"><p>More women took the drug, and women had fewer heart attacks either way. Gender is a <em>confounder</em> of Drug and Heart Attack. Because men and women are equally frequent in the general population, average the two rates: 17.5% without Drug D (average of 5% and 30%) vs. 23.75% with it (average of 7.5% and 40%). Drug D is BBB: bad for women, bad for men, and bad for people.</p><p>Cells: Female 1/19 vs 3/37; Male 12/28 vs 8/12; Total 13/47 vs 11/49.</p></div></details>
+    <details class="why"><summary>Why? The adjusted rates</summary><div class="why-body"><p>More women took the drug, and women had fewer heart attacks either way. Gender is a <em>confounder</em> of Drug and Heart Attack. Because men and women are equally frequent in the general population, average the two rates: 17.5% without Drug D (average of 5% and 30%) vs. 23.75% with it (average of 7.5% and 40%). Drug D is BBB: bad for women, bad for men, and bad for people.</p><p>Cells (Table 6.4): Female 1/20 vs 3/40; Male 12/40 vs 8/20; Total 13/60 vs 11/60.</p></div></details>
     <div class="takeaway"><strong>Takeaway</strong>When the third variable is a confounder, stratify — then average. The totals here are misleading.</div>
-    <button class="btn btn-primary" data-go="r3-twist">Same numbers, new story</button>
+    <button class="btn btn-primary" data-go="r3-twist">Same pattern, new story</button>
   </section>
 
   <section class="screen" id="r3-twist">
     <h2 class="round-title">Now it’s Drug B</h2>
-    <p class="lede">Table 6.6 uses <em>exactly the same numbers</em>, relabeled. Blood pressure is measured <em>after</em> treatment — a mediator, not a confounder.</p>
+    <p class="lede">Table 6.6 shows the same rate pattern, relabeled. Blood pressure is measured <em>after</em> treatment — a mediator, not a confounder.</p>
     <div class="glass"><div id="diag-mediator"></div></div>
     <div class="glass">
       <div class="rates">
@@ -1277,11 +1266,13 @@ body.og #og { display: block; }
     if (box) {
       let yes = "Correct.";
       let no = "Not quite — the next screen shows why.";
-      if (q === "drugD" && !ok) no = "The totals suggest that — and that is Simpson’s paradox. Split the table next.";
-      if (q === "drugD" && ok) yes = "You didn’t trust the totals. The split table shows why that was the right call.";
+      if (q === "drugD" && !ok) no = "Not quite. Sex is a confounder here, so the sex-specific rates decide — and both are worse with the drug.";
+      if (q === "drugD" && ok) yes = "Correct. Sex confounds treatment and outcome, so you stratify: Drug D is worse for women and for men.";
       if (q === "drugB" && ok) yes = "Correct. Because blood pressure is a mediator, the total effect lives in the combined data: the drug helps.";
+      if (q === "drugB" && !ok) no = "Not quite. Blood pressure is a mediator here, so splitting on it blocks part of the drug’s effect — use the totals.";
       if (q === "monty" && ok) yes = "Correct. Switching wins about 2 in 3; staying wins about 1 in 3.";
-      if (q === "coins" && ok) yes = "Correct. Throwing out tails-tails makes the coins look glued together.";
+      if (q === "coins" && !ok) no = "Not quite. In the recorded list, whenever Coin 1 is tails, Coin 2 must be heads — TT was thrown out.";
+      if (q === "coins" && ok) yes = "Correct. After throwing out TT, Coin 1’s outcome predicts Coin 2’s in the list we kept.";
       if (q === "lord" && ok) yes = "Correct. If initial weight assigns the hall, it is a confounder — stratify.";
       box.innerHTML = ok ? '<p class="result ok">' + yes + "</p>" : '<p class="result no">' + no + "</p>";
     }
